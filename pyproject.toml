@@ -2,7 +2,7 @@
 name = "quandary"
 description = "A mini-langauge compiler for answering conditions."
 
-readme = "README.rst"
+readme = "README.md"
 
 authors = [
     {name = "Curtis Maloney", email = "curtis@tinbrain.net"},
