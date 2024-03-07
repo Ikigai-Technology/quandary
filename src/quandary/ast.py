@@ -1,7 +1,12 @@
 import operator
 
 
-class Lookup:
+class Ast:
+    def __call__(self, scope):
+        return self.eval(scope)
+
+
+class Lookup(Ast):
     def __init__(self, root, key=""):
         self.root, self.key = root, key
 
@@ -15,7 +20,7 @@ class Lookup:
         return f'Lookup({self.root}{"." if self.key else ""}{self.key})'
 
 
-class Unary:
+class Unary(Ast):
     def __init__(self, value):
         self.value = value
 
@@ -43,7 +48,7 @@ class Not(Unary):
         return not self.value.eval(context)
 
 
-class BinaryOp:
+class BinaryOp(Ast):
     oper = {
         # Logic ops
         "and": lambda left, right: left and right,
@@ -76,7 +81,7 @@ class BinaryOp:
         return f"{self.__class__.__name__}({self.left} {self.op} {self.right})"
 
 
-class Function:
+class Function(Ast):
     def __init__(self, name, args):
         self.name, self.args = name, args
 

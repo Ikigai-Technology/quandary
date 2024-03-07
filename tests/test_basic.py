@@ -72,11 +72,8 @@ from quandary import Scope, compiler
     ],
 )
 def test_basic(program, state, expected):
-    # tree = compiler.grammar.parse(program)
-    # print(tree)
-    # code = compiler.visit(tree)
     code = compiler.parse(program)
 
-    result = code.eval(state)
+    result = code(state)
 
     assert result == expected
