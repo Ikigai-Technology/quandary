@@ -13,7 +13,7 @@ scope = {
     "a": 5.0,
 }
 
-result = code.eval(scope)  # 11.0
+result = code(scope)  # 11.0
 ```
 
 ## Syntax
@@ -62,4 +62,12 @@ Functions must be attached to the `scope` as a property [not a key].
 
 To help, there is the `Scope` class.
 
-    scope = Scope({default data}, functions={...})
+    scope = Scope({
+        "scale": 1.5,
+        "dimension": {"width", 200}
+    },
+    functions={
+        "power":
+    })
+
+    code = compiler.parse(")
