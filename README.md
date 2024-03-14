@@ -62,12 +62,19 @@ Functions must be attached to the `scope` as a property [not a key].
 
 To help, there is the `Scope` class.
 
-    scope = Scope({
-        "scale": 1.5,
-        "dimension": {"width", 200}
-    },
-    functions={
-        "power":
-    })
+    import math
 
-    code = compiler.parse(")
+    from quandary import compiler, Scope
+
+    scope = Scope({
+            "scale": 1.5,
+            "dimension": {"width": 200}
+        },
+        functions={
+            "root": math.sqrt,
+        },
+    )
+
+    code = compiler.parse("root(scale * dimension.width)")
+
+    code(scope)  # 17.320508075688775
