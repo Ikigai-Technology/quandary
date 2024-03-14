@@ -13,7 +13,7 @@ bool_factor = ("(" bool_expr ")") / ("not" _ bool_factor) / comparison
 
 comparison = (sum _ comp_op _ sum) / sum
 
-comp_op = "<" / "<=" / "=" / "<>" / ">=" / ">"
+comp_op = "<=" / "<>" / "<" / "=" / ">=" / ">"
 
 # Basic maths
 

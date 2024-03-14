@@ -77,3 +77,27 @@ def test_basic(program, state, expected):
     result = code(state)
 
     assert result == expected
+
+
+COMPARISON_VALUES = [
+    (0, 1),
+    (1, 1),
+    (1, 0),
+]
+@pytest.mark.parametrize('op, results', [
+    ["<", [True, False, False]],
+    ["<=", [True, True, False]],
+    ["=", [False, True, False]],
+    ["<>", [True, False, True]],
+    [">=", [False, True, True]],
+    [">", [False, False, True]],
+])
+def test_comparison(op, results):
+    code = compiler.parse(f'left {op} right')
+
+    for (l, r), expected in zip(COMPARISON_VALUES, results):
+        result = code({
+            "left": l,
+            "right": r,
+        })
+        assert result == expected
