@@ -78,3 +78,10 @@ To help, there is the `Scope` class.
     code = compiler.parse("root(scale * dimension.width)")
 
     code(scope)  # 17.320508075688775
+
+
+# Thanks
+
+Special thanks to Joey Smith (joeysmith@gmail.com) for helping to refine the
+grammer to handle expressions properly.
+
