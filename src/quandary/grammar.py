@@ -1,45 +1,39 @@
 from parsimonious.grammar import Grammar
 
 grammar = Grammar(r"""
-# Boolean
+    expr = ws logical_expr ws
+    logical_expr = not_expr ( ws bool_operator ws not_expr )*
 
-bool_expr = (bool_term _ "or" _ bool_term) / bool_term
+    not_expr = ("not" ws)? comparison_expr
+    comparison_expr = sum_expr ( ws comparison_operator ws sum_expr )?
 
-bool_term = (bool_factor _ "and" _ bool_factor) / bool_factor
+    sum_expr = factor_expr ( ws sum_operator ws factor_expr )*
+    factor_expr = term ( ws factor_operator ws term )*
 
-bool_factor = ("(" bool_expr ")") / ("not" _ bool_factor) / comparison
+    term = number / string / parens / boolean / function / lookup
 
-# Comparisons
+    parens = ws "(" expr ")" ws
 
-comparison = (sum _ comp_op _ sum) / sum
+    # Operators
 
-comp_op = "<=" / "<>" / "<" / "=" / ">=" / ">"
+    bool_operator = "and" / "or"
+    sum_operator = "+" / "-"
+    factor_operator = "*" / "/"
+    comparison_operator = "<=" / "<>" / "<" / "=" / ">=" / ">"
 
-# Basic maths
+    # Functions
 
-sum = (term _ sum_op _ sum) / term
+    arguments = expr ("," expr)*
+    function = name "(" arguments? ")"
 
-sum_op = "+" / "-"
+    # Basic value sources
 
-term = (factor _ prod_op _ term) / factor
+    lookup = name ("." name)*
 
-prod_op = "*" / "/"
+    name = ~r"[a-zA-Z]\w*"
+    number  = ~r"-?\d+(\.\d+)?"
+    boolean = "TRUE" / "FALSE"
+    string = ~r"\"([^\"\\]|\\\")*?\""
 
-factor = function / string / boolean / lookup / number / factor
-
-# Functions
-
-arguments = (bool_expr "," _ arguments) / bool_expr
-function = name "(" arguments ")"
-
-# Basic value sources
-
-lookup = (name "." name) / name
-
-name    = ~r"[a-zA-Z]\w*"
-number  = ~r"-?\d+(\.\d+)?"
-boolean = "TRUE" / "FALSE"
-string = ~r"\"([^\"\\]|\\\")*?\""
-
-_ = ~r"\s+"
+    ws = ~r"\s*"
 """)

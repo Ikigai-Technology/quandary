@@ -7,17 +7,21 @@ class Ast:
 
 
 class Lookup(Ast):
-    def __init__(self, root, key=""):
-        self.root, self.key = root, key
+    def __init__(self, *args):
+        self.args = args
 
     def eval(self, context):
-        if self.key:
-            return context.get(self.root, {}).get(self.key)
+        value = context
+        for key in self.args:
+            try:
+                value = value[key]
+            except (KeyError, TypeError):
+                return None
 
-        return context.get(self.root)
+        return value
 
     def __str__(self):
-        return f'Lookup({self.root}{"." if self.key else ""}{self.key})'
+        return f"Lookup({self.args})"
 
 
 class Unary(Ast):

@@ -1,164 +1,119 @@
-from functools import wraps
-
-from parsimonious.nodes import NodeVisitor
+from parsimonious.nodes import Node, NodeVisitor
 
 from . import ast
 from .grammar import grammar
 
 
-def catch(method):
+def is_blank(node):
     """
-    Decorator to catch any match/case falling through.
+    Helper to detect blank nodes
     """
-
-    @wraps(method)
-    def _inner(self, node, visited_children):
-        result = method(self, node, visited_children)
-        if result is None:
-            raise ValueError(f"{method.__name__.upper()}: Failed to parse: {visited_children}")
-        return result
-
-    return _inner
+    return isinstance(node, Node) and node.start == node.end
 
 
 class Compiler(NodeVisitor):
     grammar = grammar
 
     def generic_visit(self, node, visited_children):
-        # Since we turn requisite whitespace into None, strip those nodes where
-        # possible.
+        # Since we turn whitespace into None, strip those nodes where possible.
         return [c for c in visited_children if c is not None] or node
 
-    @catch
-    def visit_bool_expr(self, _, visited_children):
-        """
-        bool_expr = (bool_term _ "or" _ bool_term) / bool_term
-        """
-        match visited_children:
-            case [[left, _, right]]:
-                return ast.BinaryOp(left, "or", right)
-            case [term]:
-                return term
+    def visit_expr(self, _, visited_children):
+        _, expr, _ = visited_children
+        return expr
 
-    @catch
-    def visit_bool_term(self, _, visited_children):
-        """
-        bool_term = (bool_factor _ "and" _ bool_factor) / bool_factor
-        """
-        match visited_children:
-            case [[left, _, right]]:
-                return ast.BinaryOp(left, "and", right)
-            case [factor]:
-                return factor
+    def visit_logical_expr(self, _, visited_children):
+        expr, more = visited_children
 
-    @catch
-    def visit_bool_factor(self, _, visited_children):
-        """
-        bool_factor = ("(" bool_expr ")") / ("not" _ bool_factor) / comparison
-        """
-        match visited_children:
-            case [[_, expr, _]]:
-                return expr
-            case [[_, factor]]:
-                return ast.Not(factor)
-            case [comparison]:
-                return comparison
+        if not is_blank(more):
+            for op, right in more:
+                expr = ast.BinaryOp(expr, op, right)
 
-    # Comparisons
+        return expr
 
-    @catch
-    def visit_comparison(self, _, visited_children):
-        """
-        comparison = (sum _ comp_op _ sum) / sum
-        """
-        match visited_children:
-            case [[left, op, right]]:
-                return ast.BinaryOp(left, op, right)
-            case [sum]:
-                return sum
+    def visit_not_expr(self, _, visited_children):
+        more, term = visited_children
 
-    @catch
-    def visit_comp_op(self, node, _):
-        """
-        comp_op = "<" / "<=" / "=" / "<>" / ">=" / ">"
-        """
-        return node.text
+        if not is_blank(more):
+            term = ast.Not(term)
 
-    # Basic maths
+        return term
 
-    @catch
-    def visit_sum(self, _, visited_children):
-        """
-        sum = (term _ sum_op _ sum) / term
-        """
-        match visited_children:
-            case [[left, op, right]]:
-                return ast.BinaryOp(left, op, right)
-            case [term]:
-                return term
+    def visit_comparison_expr(self, _, visited_children):
+        expr, more = visited_children
 
-    def visit_sum_op(self, node, _):
-        """
-        sum_op = "+" / "-"
-        """
-        return node.text
+        if not is_blank(more):
+            for op, right in more:
+                expr = ast.BinaryOp(expr, op, right)
 
-    @catch
+        return expr
+
+    def visit_sum_expr(self, _, visited_children):
+        term, more = visited_children
+
+        if not is_blank(more):
+            for op, right in more:
+                term = ast.BinaryOp(term, op, right)
+
+        return term
+
+    def visit_factor_expr(self, _, visited_children):
+        term, more = visited_children
+
+        if not is_blank(more):
+            for op, right in more:
+                term = ast.BinaryOp(term, op, right)
+
+        return term
+
     def visit_term(self, _, visited_children):
-        """
-        term = (factor _ prod_op _ term) / factor
-        """
-        match visited_children:
-            case [[left, op, right]]:
-                return ast.BinaryOp(left, op, right)
-            case [factor]:
-                return factor
-
-    def visit_prod_op(self, node, _):
-        """
-        prod_op = "*" / "/"
-        """
-        return node.text
-
-    def visit_factor(self, _, visited_children):
-        """
-        factor = function / string / boolean / lookup / number / factor
-        """
         return visited_children[0]
 
-    # Functions
-
-    @catch
     def visit_arguments(self, _, visited_children):
-        """
-        arguments = (bool_expr "," _ arguments) / bool_expr
-        """
-        match visited_children:
-            case [[expr, _, arguments]]:
-                return (expr, *arguments)
-            case [expr]:
-                return (expr,)
+        arg, more = visited_children
+
+        args = (arg,)
+        if not is_blank(more):
+            for _, arg in more:
+                args = (*args, arg)
+
+        return args
 
     def visit_function(self, _, visited_children):
-        """
-        function = name "(" arguments ")"
-        """
-        name, _, args, _ = visited_children
+        name, _, arguments, _ = visited_children
+
+        if not is_blank(arguments):
+            args = arguments[0]
+        else:
+            args = ()
 
         return ast.Function(name, args)
 
-    # Basic value sources
+    def visit_parens(self, _, visited_children):
+        _, _, expr, _, _ = visited_children
 
-    @catch
+        return expr
+
+    def visit_bool_operator(self, node, _):
+        return node.text
+
+    def visit_sum_operator(self, node, _):
+        return node.text
+
+    def visit_factor_operator(self, node, _):
+        return node.text
+
+    def visit_comparison_operator(self, node, _):
+        return node.text
+
     def visit_lookup(self, _, visited_children):
-        """
-        lookup = (name "." name) / name
-        """
-        match visited_children:
-            case [[root, _, key]]:
-                return ast.Lookup(root, key)
-            case [root]:
-                return ast.Lookup(root)
+        args, more = visited_children
+        args = [args]
+        if not is_blank(more):
+            for _, name in more:
+                args.append(name)
+
+        return ast.Lookup(*args)
 
     def visit_name(self, node, _):
         return node.text
@@ -172,7 +127,7 @@ class Compiler(NodeVisitor):
     def visit_string(self, node, _):
         return ast.String(node.text[1:-1].replace(r"\"", '"'))
 
-    def visit__(self, _, __):
+    def visit_ws(self, _, __):
         return None
 
 
