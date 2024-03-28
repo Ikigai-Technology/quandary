@@ -28,6 +28,13 @@ dependencies = [
 
 dynamic = ["version"]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "coverage",
+    "ruff",
+]
+
 [project.urls]
 
 [tool.setuptools.dynamic]
