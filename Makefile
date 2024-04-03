@@ -28,3 +28,7 @@ test:  ## Test
 .PHONY: report
 report:  ## Generate HTML coverage report
 	coverage html
+
+.PHONY: build
+build:  ## Build distribution package
+	python -m build
