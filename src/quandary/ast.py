@@ -58,6 +58,7 @@ class BinaryOp(Ast):
         "and": lambda left, right: left and right,
         "or": lambda left, right: left or right,
         # Math Ops
+        "**": operator.pow,
         "+": operator.add,
         "-": operator.sub,
         "*": operator.mul,
@@ -82,7 +83,7 @@ class BinaryOp(Ast):
         return op(left, right)
 
     def __str__(self):
-        return f"{self.__class__.__name__}({self.left} {self.op} {self.right})"
+        return f"Op({self.left} {self.op} {self.right})"
 
 
 class Function(Ast):
