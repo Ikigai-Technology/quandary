@@ -98,6 +98,7 @@ def test_comparison(op, results):
         ("2 + 3 * (6 - 5)", {}, 5),
         ("(2 + 3) - 5", {}, 0),
         ("(2 + 3) * 6 - 5", {}, 25),
+        ("2 ** 3", {}, 8),
     ],
 )
 def test_maths(expr, scope, expected):
@@ -141,6 +142,7 @@ def test_functions(program, state, expected):
         ("(measurements.height * measurements.height)", pytest.approx(2.9929)),
         ("(measurements.height * measurements.height) / measurements.weight", pytest.approx(0.0315042)),
         ("measurements.weight / (measurements.height * measurements.height)", pytest.approx(31.74178)),
+        ("measurements.weight / (measurements.height / 100 ** 2)", pytest.approx(317417.8)),
     ],
 )
 def test_expression(expr, expected):
@@ -153,10 +155,7 @@ def test_expression(expr, expected):
         }
     )
 
-    tree = compiler.grammar.parse(expr)
-    print(tree)
-    code = compiler.visit(tree)
-    # code = compiler.parse(expr)
+    code = compiler.parse(expr)
     result = code(scope)
 
     assert result == expected
