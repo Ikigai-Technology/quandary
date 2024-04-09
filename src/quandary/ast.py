@@ -1,5 +1,7 @@
 import operator
 
+from .nil import Nil
+
 
 class Ast:
     def __call__(self, scope):
@@ -52,11 +54,23 @@ class Not(Unary):
         return not self.value.eval(scope)
 
 
+def and_(left, right):
+    if left is Nil or right is Nil:
+        return Nil
+    return left and right
+
+
+def or_(left, right):
+    if left is Nil or right is Nil:
+        return Nil
+    return left or right
+
+
 class BinaryOp(Ast):
     oper = {
         # Logic ops
-        "and": lambda left, right: left and right,
-        "or": lambda left, right: left or right,
+        "and": and_,
+        "or": or_,
         # Math Ops
         "**": operator.pow,
         "+": operator.add,
