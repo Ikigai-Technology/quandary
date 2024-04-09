@@ -10,8 +10,8 @@ class Lookup(Ast):
     def __init__(self, *args):
         self.args = args
 
-    def eval(self, context):
-        value = context
+    def eval(self, scope):
+        value = scope
         for key in self.args:
             try:
                 value = value[key]
@@ -48,8 +48,8 @@ class String(Unary):
 
 
 class Not(Unary):
-    def eval(self, context):
-        return not self.value.eval(context)
+    def eval(self, scope):
+        return not self.value.eval(scope)
 
 
 class BinaryOp(Ast):
@@ -75,10 +75,10 @@ class BinaryOp(Ast):
     def __init__(self, left, op, right):
         self.left, self.op, self.right = left, op, right
 
-    def eval(self, context):
+    def eval(self, scope):
         op = self.oper[self.op]
-        left = self.left.eval(context)
-        right = self.right.eval(context)
+        left = self.left.eval(scope)
+        right = self.right.eval(scope)
 
         return op(left, right)
 
@@ -90,7 +90,7 @@ class Function(Ast):
     def __init__(self, name, args):
         self.name, self.args = name, args
 
-    def eval(self, context):
-        args = [arg.eval(context) for arg in self.args]
+    def eval(self, scope):
+        args = [arg.eval(scope) for arg in self.args]
 
-        return context.functions[self.name](*args)
+        return scope.functions[self.name](*args)
