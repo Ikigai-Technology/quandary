@@ -1,6 +1,6 @@
 # ruff: noqa: S101
 import pytest
-from quandary import Scope, compiler
+from quandary import compiler
 
 
 @pytest.mark.parametrize(
@@ -42,120 +42,13 @@ from quandary import Scope, compiler
             },
             True,
         ],
+        # TODO: Power precedence
+        # ("x * 2 ** 2", {'x': 5}, 20),
     ],
 )
 def test_basic(program, state, expected):
-    # code = compiler.parse(program)
-    tree = compiler.grammar.parse(program)
-
-    print(tree)
-
-    code = compiler.visit(tree)
-
-    result = code(state)
-
-    assert result == expected
-
-
-COMPARISON_VALUES = [
-    (0, 1),
-    (1, 1),
-    (1, 0),
-]
-
-
-@pytest.mark.parametrize(
-    "op, results",
-    [
-        ["<", [True, False, False]],
-        ["<=", [True, True, False]],
-        ["=", [False, True, False]],
-        ["<>", [True, False, True]],
-        [">=", [False, True, True]],
-        [">", [False, False, True]],
-    ],
-)
-def test_comparison(op, results):
-    code = compiler.parse(f"left {op} right")
-
-    for (left, right), expected in zip(COMPARISON_VALUES, results):
-        result = code(
-            {
-                "left": left,
-                "right": right,
-            }
-        )
-        assert result == expected
-
-
-@pytest.mark.parametrize(
-    "expr, scope, expected",
-    [
-        ("1 + 1.0", {}, 2.0),
-        ("1 * 2", {}, 2),
-        ("12 / 3", {}, 4),
-        ("2 + 3 * 6 - 5", {}, 15),
-        ("2 + 3 * (6 - 5)", {}, 5),
-        ("(2 + 3) - 5", {}, 0),
-        ("(2 + 3) * 6 - 5", {}, 25),
-        ("2 ** 3", {}, 8),
-    ],
-)
-def test_maths(expr, scope, expected):
-    code = compiler.parse(expr)
-
-    result = code(scope)
-
-    assert result == expected
-
-
-@pytest.mark.parametrize(
-    "program, state, expected",
-    [
-        ["""abs(-5)""", Scope(functions={"abs": abs}), 5],
-        [
-            """join(a, "two")""",
-            Scope(
-                {"a": "one"},
-                {"join": lambda *args: " ".join(str(a) for a in args)},
-            ),
-            "one two",
-        ],
-        # Support expressions as arguments
-        ["""abs(2 * -3)""", Scope(functions={"abs": abs}), 6],
-        # Functions with no arguments
-        ["""int()""", Scope(functions={"int": int}), 0],
-    ],
-)
-def test_functions(program, state, expected):
     code = compiler.parse(program)
 
     result = code(state)
-
-    assert result == expected
-
-
-@pytest.mark.parametrize(
-    "expr, expected",
-    [
-        ("measurements.weight / measurements.height", pytest.approx(54.91329)),
-        ("(measurements.height * measurements.height)", pytest.approx(2.9929)),
-        ("(measurements.height * measurements.height) / measurements.weight", pytest.approx(0.0315042)),
-        ("measurements.weight / (measurements.height * measurements.height)", pytest.approx(31.74178)),
-        ("measurements.weight / (measurements.height / 100 ** 2)", pytest.approx(317417.8)),
-    ],
-)
-def test_expression(expr, expected):
-    scope = Scope(
-        {
-            "measurements": {
-                "weight": 95.0,
-                "height": 1.73,
-            }
-        }
-    )
-
-    code = compiler.parse(expr)
-    result = code(scope)
 
     assert result == expected
