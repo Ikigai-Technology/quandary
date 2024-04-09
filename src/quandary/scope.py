@@ -1,4 +1,7 @@
 class Scope(dict):
-    def __init__(self, default={}, functions={}):
-        super().__init__(default)
+    default = None
+
+    def __init__(self, contents={}, functions={}, default=None):
+        super().__init__(contents)
+        self.default = default
         self.functions = functions

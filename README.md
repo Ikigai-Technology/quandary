@@ -18,12 +18,11 @@ result = code(scope)  # 11.0
 
 ## Syntax
 
-Variable lookup
+Scope lookup
 
     a
     a.b
-
-Only two levels of lookup are supported.
+    a.b.c
 
 Literals
 
@@ -38,6 +37,7 @@ Maths
     a + b
     a - -5
     (a + 6) * -3.0
+    x ** 2
 
 Comparisons
 
@@ -60,6 +60,8 @@ Functions
 
 Functions must be attached to the `scope` as a property [not a key].
 
+## Scope
+
 To help, there is the `Scope` class.
 
     import math
@@ -78,6 +80,23 @@ To help, there is the `Scope` class.
     code = compiler.parse("root(scale * dimension.width)")
 
     code(scope)  # 17.320508075688775
+
+## Default values
+
+When a scope lookup is made for a name that doesn't exist, `quandary` will look
+for a `default` property on the `scope`, or default to `None`.
+
+The `Scope` class a `default` argument, letting you specify the value to use.
+
+    from quandary import compiler, Scope
+
+    scope = Scope({}, default=False)
+
+    func = compiler.parse("a")
+
+    result = func(scope)
+
+    assert result is False
 
 
 # Thanks
