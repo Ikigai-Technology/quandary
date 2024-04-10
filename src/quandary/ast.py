@@ -16,7 +16,7 @@ class Lookup(Ast):
             try:
                 value = value[key]
             except (KeyError, TypeError):
-                return None
+                return getattr(scope, "default", None)
 
         return value
 
