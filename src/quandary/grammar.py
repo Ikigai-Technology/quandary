@@ -8,7 +8,8 @@ grammar = Grammar(r"""
     comparison_expr = sum_expr ( ws comparison_operator ws sum_expr )?
 
     sum_expr = factor_expr ( ws sum_operator ws factor_expr )*
-    factor_expr = term ( ws factor_operator ws term )*
+    factor_expr = power_expr ( ws factor_operator ws power_expr )*
+    power_expr = term ( ws power_operator ws term )?
 
     term = number / string / parens / boolean / function / lookup
 
@@ -18,7 +19,8 @@ grammar = Grammar(r"""
 
     bool_operator = "and" / "or"
     sum_operator = "+" / "-"
-    factor_operator = "**" / "*" / "/"
+    factor_operator = "*" / "/"
+    power_operator = "**"
     comparison_operator = "<=" / "<>" / "<" / "=" / ">=" / ">"
 
     # Functions

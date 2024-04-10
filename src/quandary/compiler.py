@@ -66,6 +66,15 @@ class Compiler(NodeVisitor):
 
         return term
 
+    def visit_power_expr(self, _, visited_children):
+        term, more = visited_children
+
+        if not is_blank(more):
+            for op, right in more:
+                term = ast.BinaryOp(term, op, right)
+
+        return term
+
     def visit_term(self, _, visited_children):
         return visited_children[0]
 
@@ -101,6 +110,9 @@ class Compiler(NodeVisitor):
         return node.text
 
     def visit_factor_operator(self, node, _):
+        return node.text
+
+    def visit_power_operator(self, node, _):
         return node.text
 
     def visit_comparison_operator(self, node, _):
