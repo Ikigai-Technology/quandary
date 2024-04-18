@@ -105,8 +105,7 @@ class Condition(Ast):
         self.rules, self.default = rules, default
 
     def eval(self, scope):
-        rules = self.rules
-        for rule in rules:
+        for rule in self.rules:
             cond, result = rule
             outcome = cond.eval(scope)
             if (outcome):
@@ -114,7 +113,7 @@ class Condition(Ast):
         return self.default.eval(scope)    
 
     def __str__(self):
-        return f"Condition({self.rules} -- {self.default})"
+        return f"Condition({self.rules} {self.default})"
 
 
 class Function(Ast):
