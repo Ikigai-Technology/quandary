@@ -2,7 +2,6 @@ from parsimonious.nodes import Node, NodeVisitor
 
 from . import ast
 from .grammar import grammar
-from .debug import debug
 
 def is_blank(node):
     """
@@ -14,12 +13,10 @@ def is_blank(node):
 class Compiler(NodeVisitor):
     grammar = grammar
 
-    @debug
     def visit_condition_rule(self, node, visited_children):
         condition, _ , outcome = visited_children
         return condition, outcome 
 
-    @debug
     def visit_condition(self, node, visited_children):
         '''
         condition = "(" condition_rule ":" (condition_rule ":" )* expr ")"
@@ -30,10 +27,6 @@ class Compiler(NodeVisitor):
             for new_expr, _ in more:
                 expr = (*expr, new_expr)
         
-#            next_expr, *right = more[0]
-#            expr = expr, next_expr
-#            more = right
- 
         return ast.Condition(default, expr)
 
     def generic_visit(self, node, visited_children):
