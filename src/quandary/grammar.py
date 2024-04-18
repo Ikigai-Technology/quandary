@@ -11,7 +11,7 @@ grammar = Grammar(r"""
     factor_expr = power_expr ( ws factor_operator ws power_expr )*
     power_expr = term ( ws power_operator ws term )?
 
-    term = number / string / parens / boolean / function / lookup
+    term = number / string / parens / boolean / function / lookup / condition
 
     parens = ws "(" expr ")" ws
 
@@ -27,6 +27,10 @@ grammar = Grammar(r"""
 
     arguments = expr ("," expr)*
     function = name "(" arguments? ")"
+
+    # Conditional
+    condition = "(" condition_rule ":" (condition_rule ":" )* expr ")"
+    condition_rule = expr "?" expr
 
     # Basic value sources
 
