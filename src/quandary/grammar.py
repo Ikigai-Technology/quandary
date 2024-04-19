@@ -29,7 +29,7 @@ grammar = Grammar(r"""
     function = name "(" arguments? ")"
 
     # Conditional
-    condition = "(" condition_rule ":" (condition_rule ":" )* expr ")"
+    condition = "(" (condition_rule ":" )+ expr ")"
     condition_rule = expr "?" expr
 
     # Basic value sources

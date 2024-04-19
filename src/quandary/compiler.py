@@ -22,13 +22,11 @@ class Compiler(NodeVisitor):
         """
         condition = "(" condition_rule ":" (condition_rule ":" )* expr ")"
         """
-        _, *expr, _, more, default, _ = visited_children
+        _, clauses, default, _ = visited_children
 
-        if more and not is_blank(more):
-            for new_expr, _ in more:
-                expr = (*expr, new_expr)
+        rules = (clause for clause,_ in clauses)
 
-        return ast.Condition(default, expr)
+        return ast.Condition(default, rules)
 
     def generic_visit(self, node, visited_children):
         # Since we turn whitespace into None, strip those nodes where possible.
