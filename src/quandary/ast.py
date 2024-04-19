@@ -107,6 +107,20 @@ class BinaryOp(Ast):
         return f"Op({self.left} {self.op} {self.right})"
 
 
+class Condition(Ast):
+    def __init__(self, default, rules):
+        self.rules, self.default = rules, default
+
+    def eval(self, scope):
+        for cond, result in self.rules:
+            if cond.eval(scope):
+                return result.eval(scope)
+        return self.default.eval(scope)
+
+    def __str__(self):
+        return f"Condition({self.rules} {self.default})"
+
+
 class Function(Ast):
     def __init__(self, name, args):
         self.name, self.args = name, args

@@ -14,6 +14,29 @@ def is_blank(node):
 class Compiler(NodeVisitor):
     grammar = grammar
 
+    def visit_condition_rule(self, _, visited_children):
+        condition, _, outcome = visited_children
+        return condition, outcome
+
+    def visit_condition(self, _, visited_children):
+        _, clauses, default, _ = visited_children
+
+        rules = (clause for clause, _ in clauses)
+
+        return ast.Condition(default, rules)
+
+    def visit_condition_if_rule(self, _, visited_children):
+        outcome, _, condition = visited_children
+        return condition, outcome
+
+    def visit_condition_if(self, _, visited_children):
+        _, primary, clauses, _, _, default, _ = visited_children
+
+        clauses = (clause for _, clause in clauses)
+        clauses = (primary, *clauses)
+
+        return ast.Condition(default, clauses)
+
     def generic_visit(self, node, visited_children):
         # Since we turn whitespace into None, strip those nodes where possible.
         return [c for c in visited_children if c is not None] or node
