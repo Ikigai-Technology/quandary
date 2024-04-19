@@ -47,6 +47,7 @@ Comparisons
     <>
     >=
     >
+    in
 
 Logic
 
