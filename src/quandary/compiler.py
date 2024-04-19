@@ -3,6 +3,7 @@ from parsimonious.nodes import Node, NodeVisitor
 from . import ast
 from .grammar import grammar
 
+
 def is_blank(node):
     """
     Helper to detect blank nodes
@@ -13,20 +14,20 @@ def is_blank(node):
 class Compiler(NodeVisitor):
     grammar = grammar
 
-    def visit_condition_rule(self, node, visited_children):
-        condition, _ , outcome = visited_children
-        return condition, outcome 
+    def visit_condition_rule(self, _, visited_children):
+        condition, _, outcome = visited_children
+        return condition, outcome
 
-    def visit_condition(self, node, visited_children):
-        '''
+    def visit_condition(self, _, visited_children):
+        """
         condition = "(" condition_rule ":" (condition_rule ":" )* expr ")"
-        '''
+        """
         _, *expr, _, more, default, _ = visited_children
-        
+
         if more and not is_blank(more):
             for new_expr, _ in more:
                 expr = (*expr, new_expr)
-        
+
         return ast.Condition(default, expr)
 
     def generic_visit(self, node, visited_children):
