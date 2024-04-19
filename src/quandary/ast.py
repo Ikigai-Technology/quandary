@@ -66,6 +66,12 @@ def or_(left, right):
     return left or right
 
 
+def in_(left, right):
+    if left is Nil or right is Nil:
+        return Nil
+    return left in right
+
+
 class BinaryOp(Ast):
     oper = {
         # Logic ops
@@ -84,6 +90,7 @@ class BinaryOp(Ast):
         "<>": operator.ne,
         ">=": operator.ge,
         ">": operator.gt,
+        "in": in_,
     }
 
     def __init__(self, left, op, right):

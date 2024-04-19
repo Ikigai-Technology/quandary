@@ -21,7 +21,7 @@ grammar = Grammar(r"""
     sum_operator = "+" / "-"
     factor_operator = "*" / "/"
     power_operator = "**"
-    comparison_operator = "<=" / "<>" / "<" / "=" / ">=" / ">"
+    comparison_operator = "<=" / "<>" / "<" / "=" / ">=" / ">" / "in"
 
     # Functions
 

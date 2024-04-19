@@ -27,3 +27,15 @@ def test_comparison(op, results):
     for (left, right), expected in zip(COMPARISON_VALUES, results):
         result = code({"left": left, "right": right})
         assert result == expected, (left, right)
+
+
+def test_in():
+    code = compiler.parse("a in b")
+
+    result = code({"a": 6, "b": [2, 4, 6]})
+
+    assert result
+
+    result = code({"a": 6, "b": [1, 2, 3]})
+
+    assert not result
