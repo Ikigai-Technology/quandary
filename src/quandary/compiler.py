@@ -19,9 +19,6 @@ class Compiler(NodeVisitor):
         return condition, outcome
 
     def visit_condition(self, _, visited_children):
-        """
-        condition = "(" condition_rule ":" (condition_rule ":" )* expr ")"
-        """
         _, clauses, default, _ = visited_children
 
         rules = (clause for clause, _ in clauses)
@@ -29,23 +26,16 @@ class Compiler(NodeVisitor):
         return ast.Condition(default, rules)
 
     def visit_condition_if_rule(self, _, visited_children):
-        """
-        condition_if_rule = expr "if" expr
-        """
         outcome, _, condition = visited_children
         return condition, outcome
 
     def visit_condition_if(self, _, visited_children):
-        """
-        condifion_if = "(" conditionif_rule ( "," conditionif_rule)* ("," ws)? "else" expr ")"
-        """
         _, primary, clauses, _, _, default, _ = visited_children
 
         clauses = (clause for _, clause in clauses)
         clauses = (primary, *clauses)
-        rules = clauses  # (clause for _,clause in clauses)
 
-        return ast.Condition(default, rules)
+        return ast.Condition(default, clauses)
 
     def generic_visit(self, node, visited_children):
         # Since we turn whitespace into None, strip those nodes where possible.
