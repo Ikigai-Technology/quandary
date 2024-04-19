@@ -24,7 +24,26 @@ class Compiler(NodeVisitor):
         """
         _, clauses, default, _ = visited_children
 
-        rules = (clause for clause,_ in clauses)
+        rules = (clause for clause, _ in clauses)
+
+        return ast.Condition(default, rules)
+
+    def visit_condition_if_rule(self, _, visited_children):
+        """
+        condition_if_rule = expr "if" expr
+        """
+        outcome, _, condition = visited_children
+        return condition, outcome
+
+    def visit_condition_if(self, _, visited_children):
+        """
+        condifion_if = "(" conditionif_rule ( "," conditionif_rule)* ("," ws)? "else" expr ")"
+        """
+        _, primary, clauses, _, _, default, _ = visited_children
+
+        clauses = (clause for _, clause in clauses)
+        clauses = (primary, *clauses)
+        rules = clauses  # (clause for _,clause in clauses)
 
         return ast.Condition(default, rules)
 
