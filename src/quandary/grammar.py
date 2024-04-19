@@ -28,7 +28,7 @@ grammar = Grammar(r"""
     arguments = expr ("," expr)*
     function = name "(" arguments? ")"
 
-    # Conditional (trinary form)
+    # Conditional (ternary form)
     condition = "(" (condition_rule ":" )+ expr ")"
     condition_rule = expr "?" expr
 
