@@ -55,6 +55,13 @@ Logic
     x and y
     x or y
 
+Conditional (two styles available)
+
+    (x=1 ? "x equals one" : "x isn't one")
+    (x=1 ? "one" : x=2 ? "two" : x=3 ? "three" : "something else")
+    ("one" if x=1, "two" if x=2 else "three")
+    ("one" if x=1, else "not one")
+
 Functions
 
     func(arg, arg, ...)
