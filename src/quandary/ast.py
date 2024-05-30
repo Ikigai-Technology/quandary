@@ -1,6 +1,19 @@
 import operator
 
+from .exceptions import ExecutionError
 from .nil import Nil
+
+
+def trap(func):
+    """Decorator for all eval() functions to raise ExecutionError"""
+
+    def _eval(self, scope):
+        try:
+            return func(self, scope)
+        except (TypeError, ValueError) as exc:
+            raise ExecutionError(self) from exc
+
+    return _eval
 
 
 class Ast:
@@ -12,6 +25,7 @@ class Lookup(Ast):
     def __init__(self, *args):
         self.args = args
 
+    @trap
     def eval(self, scope):
         value = scope
         for key in self.args:
@@ -35,21 +49,25 @@ class Unary(Ast):
 
 
 class Number(Unary):
+    @trap
     def eval(self, _):
         return float(self.value) if "." in self.value else int(self.value)
 
 
 class Boolean(Unary):
+    @trap
     def eval(self, _):
         return self.value == "TRUE"
 
 
 class String(Unary):
+    @trap
     def eval(self, _):
         return self.value
 
 
 class Not(Unary):
+    @trap
     def eval(self, scope):
         return not self.value.eval(scope)
 
@@ -96,6 +114,7 @@ class BinaryOp(Ast):
     def __init__(self, left, op, right):
         self.left, self.op, self.right = left, op, right
 
+    @trap
     def eval(self, scope):
         op = self.oper[self.op]
         left = self.left.eval(scope)
@@ -111,6 +130,7 @@ class Condition(Ast):
     def __init__(self, default, rules):
         self.rules, self.default = rules, default
 
+    @trap
     def eval(self, scope):
         for cond, result in self.rules:
             if cond.eval(scope):
@@ -125,6 +145,7 @@ class Function(Ast):
     def __init__(self, name, args):
         self.name, self.args = name, args
 
+    @trap
     def eval(self, scope):
         args = [arg.eval(scope) for arg in self.args]
 
