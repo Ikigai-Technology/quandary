@@ -117,8 +117,8 @@ class BinaryOp(Ast):
     @trap
     def eval(self, scope):
         op = self.oper[self.op]
-        left = self.left.eval(scope)
         right = self.right.eval(scope)
+        left = self.left.eval(scope)
 
         return op(left, right)
 
