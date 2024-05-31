@@ -1,4 +1,4 @@
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 # Expose this for user convenience.
 from parsimonious.exceptions import ParseError  # noqa: F401
