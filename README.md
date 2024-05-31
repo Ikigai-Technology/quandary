@@ -106,6 +106,18 @@ The `Scope` class a `default` argument, letting you specify the value to use.
 
     assert result is False
 
+# Handling Errors
+
+Any parse-time erorrs will raise a `parsimonious.exceptions.ParseError`.
+
+For conveinience this is re-exported as `quandary.ParseError`.
+
+See [here](https://github.com/erikrose/parsimonious) for more details.
+
+Whilst executing, if there's a `TypeError` or `ValueError` the AST node where it
+happens will raise a `quandary.exceptions.ExecutionError` from the original
+exception. You can access the failing node from `ExecutionError.node`, and printing it
+can help identify which code failed.
 
 # Thanks
 
