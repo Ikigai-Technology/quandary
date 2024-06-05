@@ -126,6 +126,14 @@ class Compiler(NodeVisitor):
 
         return expr
 
+    def visit_list(self, _, visited_children):
+        _, _, arguments, _ = visited_children
+
+        if not is_blank(arguments):
+            args = arguments[0]
+
+        return ast.List(args)
+
     def visit_bool_operator(self, node, _):
         return node.text
 
