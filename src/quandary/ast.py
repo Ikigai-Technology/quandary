@@ -66,6 +66,12 @@ class String(Unary):
         return self.value
 
 
+class List(Unary):
+    @trap
+    def eval(self, scope):
+        return [arg.eval(scope) for arg in self.value]
+
+
 class Not(Unary):
     @trap
     def eval(self, scope):

@@ -19,6 +19,8 @@ from quandary import Scope, compiler
         ["""abs(2 * -3)""", Scope(functions={"abs": abs}), 6],
         # Functions with no arguments
         ["""int()""", Scope(functions={"int": int}), 0],
+        # Functions being passed lists
+        ["""sum([1, 2, 3])""", Scope(functions={"sum": sum}), 6],
     ],
 )
 def test_functions(program, state, expected):

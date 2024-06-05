@@ -13,12 +13,12 @@ deps:  ## Rebuild dependency lock files
 
 .PHONY: clean
 clean:  ## Format and lint clean
-	ruff format src/
-	ruff check --fix src/
+	ruff format src/ tests/
+	ruff check --fix src/ tests/
 
 .PHONY: check
 check:  ## Lint check
-	ruff check src/
+	ruff check src/ tests/
 
 .PHONY: test
 test:  ## Test

@@ -11,9 +11,11 @@ grammar = Grammar(r"""
     factor_expr = power_expr ( ws factor_operator ws power_expr )*
     power_expr = term ( ws power_operator ws term )?
 
-    term = number / string / parens / boolean / function / lookup / condition / condition_if
+    term = number / string / parens / boolean / function / lookup / condition / condition_if / list
 
     parens = ws "(" expr ")" ws
+
+    list = ws "[" arguments? "]"
 
     # Operators
 
