@@ -102,7 +102,7 @@ class BinaryOp(Ast):
         "and": and_,
         "or": or_,
         # Math Ops
-        "**": operator.pow,
+        "^": operator.pow,
         "+": operator.add,
         "-": operator.sub,
         "*": operator.mul,

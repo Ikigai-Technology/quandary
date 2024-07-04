@@ -37,7 +37,7 @@ Maths
     a + b
     a - -5
     (a + 6) * -3.0
-    x ** 2
+    x ^ 2
 
 Comparisons
 
