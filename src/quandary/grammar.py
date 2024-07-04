@@ -1,21 +1,21 @@
 from parsimonious.grammar import Grammar
 
 grammar = Grammar(r"""
-    expr = ws logical_expr ws
-    logical_expr = not_expr ( ws bool_operator ws not_expr )*
+    expr = ows logical_expr ows
+    logical_expr = not_expr ( ows bool_operator ows not_expr )*
 
     not_expr = ("not" ws)? comparison_expr
-    comparison_expr = sum_expr ( ws comparison_operator ws sum_expr )?
+    comparison_expr = sum_expr ( ows comparison_operator ows sum_expr )?
 
-    sum_expr = factor_expr ( ws sum_operator ws factor_expr )*
-    factor_expr = power_expr ( ws factor_operator ws power_expr )*
-    power_expr = term ( ws power_operator ws term )?
+    sum_expr = factor_expr ( ows sum_operator ows factor_expr )*
+    factor_expr = power_expr ( ows factor_operator ows power_expr )*
+    power_expr = term ( ows power_operator ows term )?
 
     term = number / string / parens / boolean / function / lookup / condition / condition_if / list
 
-    parens = ws "(" expr ")" ws
+    parens = ows "(" expr ")" ows
 
-    list = ws "[" arguments? "]"
+    list = ows "[" arguments? "]"
 
     # Operators
 
@@ -35,7 +35,7 @@ grammar = Grammar(r"""
     condition_rule = expr "?" expr
 
     #conditional (if form)
-    condition_if = "(" condition_if_rule ( "," condition_if_rule)* ("," ws)? "else" expr ")"
+    condition_if = "(" condition_if_rule ( "," condition_if_rule)* ("," ows)? "else" expr ")"
     condition_if_rule = expr "if" expr
 
     # Basic value sources
@@ -47,5 +47,6 @@ grammar = Grammar(r"""
     boolean = "TRUE" / "FALSE"
     string = ~r"\"([^\"\\]|\\\")*?\""
 
-    ws = ~r"\s*"
+    ows = ~r"\s*"   # Optional whitespace
+    ws = ~r"\s+"    # Necessary whitespace
 """)
