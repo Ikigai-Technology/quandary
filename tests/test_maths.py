@@ -14,6 +14,8 @@ from quandary import compiler
         ("(2 + 3) - 5", {}, 0),
         ("(2 + 3) * 6 - 5", {}, 25),
         ("2 ^ 3", {}, 8),
+        # Legacy power operator
+        ("2 ** 3", {}, 8),
     ],
 )
 def test_maths(expr, scope, expected):

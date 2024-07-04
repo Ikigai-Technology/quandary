@@ -45,6 +45,9 @@ from quandary import compiler
         # TODO: Power precedence
         ("x * 2 ^ 2", {"x": 5}, 20),
         ("x ^ 3 / x ^ 2", {"x": 5}, 5),
+        # Legacy power operator
+        ("x * 2 ** 2", {"x": 5}, 20),
+        ("x ** 3 / x ** 2", {"x": 5}, 5),
         # Lists
         ('[1, 2, "3"]', {}, [1, 2, "3"]),
     ],
