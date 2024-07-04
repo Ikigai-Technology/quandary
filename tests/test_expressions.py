@@ -11,6 +11,8 @@ from quandary import compiler
         ("(measurements.height * measurements.height) / measurements.weight", pytest.approx(0.0315042)),
         ("measurements.weight / (measurements.height * measurements.height)", pytest.approx(31.74178)),
         ("measurements.weight / (measurements.height / 100) ^ 2", pytest.approx(317417.8)),
+        # Legacy power operator
+        ("measurements.weight / (measurements.height / 100) ** 2", pytest.approx(317417.8)),
     ],
 )
 def test_expression(expr, expected):

@@ -22,7 +22,7 @@ grammar = Grammar(r"""
     bool_operator = "and" / "or"
     sum_operator = "+" / "-"
     factor_operator = "*" / "/"
-    power_operator = "^"
+    power_operator = "^" / "**"  # ** is legacy power operator
     comparison_operator = "<=" / "<>" / "<" / "=" / ">=" / ">" / "in"
 
     # Functions
