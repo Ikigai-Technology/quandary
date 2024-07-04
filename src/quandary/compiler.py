@@ -170,6 +170,9 @@ class Compiler(NodeVisitor):
     def visit_string(self, node, _):
         return ast.String(node.text[1:-1].replace(r"\"", '"'))
 
+    def visit_ows(self, _, __):
+        return None
+
     def visit_ws(self, _, __):
         return None
 

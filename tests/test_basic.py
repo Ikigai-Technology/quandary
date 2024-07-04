@@ -50,6 +50,8 @@ from quandary import compiler
         ("x ** 3 / x ** 2", {"x": 5}, 5),
         # Lists
         ('[1, 2, "3"]', {}, [1, 2, "3"]),
+        # Keywords as part of variables
+        ("notice.above / 10", {"notice": {"above": 2000}}, 200),
     ],
 )
 def test_basic(program, state, expected):
