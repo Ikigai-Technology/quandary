@@ -29,8 +29,9 @@ class NodeWalker:
             self.visit(node.left)
             self.visit(node.right)
         elif isinstance(node, ast.Condition):
-            for rule in node.rules:
-                self.visit(rule)
+            for cond, result in node.rules:
+                self.visit(cond)
+                self.visit(result)
             self.visit(node.default)
         elif isinstance(node, ast.Function):
             for arg in node.args:
