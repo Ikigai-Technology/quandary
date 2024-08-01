@@ -31,10 +31,11 @@ grammar = Grammar(r"""
     function = name "(" arguments? ")"
 
     # Conditional (ternary form)
+
     condition = "(" (condition_rule ":" )+ expr ")"
     condition_rule = expr "?" expr
 
-    #conditional (if form)
+    # Conditional (if form)
     condition_if = "(" condition_if_rule ( "," condition_if_rule)* ("," ows)? "else" expr ")"
     condition_if_rule = expr "if" expr
 
