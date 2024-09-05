@@ -1,6 +1,6 @@
 [project]
 name = "quandary"
-description = "A mini-langauge compiler for answering conditions."
+description = "A mini-language compiler for answering conditions."
 
 readme = "README.md"
 
@@ -8,7 +8,7 @@ authors = [
     {name = "Curtis Maloney", email = "curtis@tinbrain.net"},
 ]
 
-license.text = ""
+license.text = "MIT"
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
