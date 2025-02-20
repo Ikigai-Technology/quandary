@@ -5,7 +5,7 @@
 ## Usage
 
 ```py
-from qandary import compiler
+from quandary import compiler
 
 code = compiler.parse("""a + 6""")
 
